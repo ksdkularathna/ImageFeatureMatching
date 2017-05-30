@@ -5,6 +5,7 @@
 #include <fstream>
 #include "FeatureMatching.h" 
 #include <string>
+#include <direct.h>
 
 using namespace std;
 using namespace cv;
@@ -56,10 +57,11 @@ int addANewAdvertisement(int addId, string addName) {
 	outfile << '\n' << addId << "," << addName;
 	std::cout << "id " << addId << " advertisement added." << '\n';
 	
-	// creating the histogram feature file
-	cv::FileStorage fs("db/hist_features/" + std::to_string(addId) + ".yml", cv::FileStorage::WRITE);
-	fs.release();
-
+	// creating a directories for newly added addvertisement
+	// TODO : create other directories too
+	string directoryName = "db/" + std::to_string(addId) + "/hist_features";
+	_mkdir(directoryName.c_str());
+	
 	return 0;
 }
 
@@ -97,7 +99,7 @@ int extractFeaturesAndCreateFeatureFile(int addId, Mat image, string frameName) 
 	normalize(hist_base, hist_base, 0, 1, NORM_MINMAX, -1, Mat());
 
 	// save calculated histogram of the frame to the feature file
-	cv::FileStorage fs("db/hist_features/"+ std::to_string(addId) +".yml", cv::FileStorage::APPEND);
+	cv::FileStorage fs("db/"+std::to_string(addId)+"/hist_features/"+frameName+".yml", cv::FileStorage::WRITE);
 	fs << frameName << hist_base;
 	fs.release();
 	
