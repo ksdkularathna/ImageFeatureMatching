@@ -59,7 +59,7 @@ int addANewAdvertisement(int addId, string addName) {
 	
 	// creating a directories for newly added addvertisement
 	// TODO : create other directories too
-	string directoryName = "db/" + std::to_string(addId) + "/hist_features";
+	string directoryName = "db/" + std::to_string(addId);
 	_mkdir(directoryName.c_str());
 	
 	return 0;
@@ -67,8 +67,8 @@ int addANewAdvertisement(int addId, string addName) {
 
 int extractFeaturesAndCreateFeatureFile(int addId, Mat image, string frameName) {
 
+	//-------------- adding the histogram features to the database
 	Mat hsv_base;
-
 	if (image.empty())
 	{
 		cout << "Can't read the images" << endl;
@@ -104,6 +104,18 @@ int extractFeaturesAndCreateFeatureFile(int addId, Mat image, string frameName) 
 	fs.release();
 	
 	cout << "Histogram features added to the feature file" << endl;
+	
+	//--------------- adding surf features to the database
+
+	cvtColor(image, image, CV_LOAD_IMAGE_GRAYSCALE);
+
+	//-- Step 1: Detect the keypoints using SURF Detector
+	int minHessian = 400;
+	//SurfFeatureDetector detector(minHessian);
+
+	std::vector<KeyPoint> keypoints_1, keypoints_2;
+
+	//detector.detect(image, keypoints_1);
 
 	return 0;
 }

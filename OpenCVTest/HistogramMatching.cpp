@@ -59,20 +59,20 @@ int histogramMatching() {
 	fs.release();
 	*/
 
-	//calcHist(&hsv_test1, 1, channels, Mat(), hist_test1, 2, histSize, ranges, true, false);
-	//normalize(hist_test1, hist_test1, 0, 1, NORM_MINMAX, -1, Mat());
+	calcHist(&hsv_test1, 1, channels, Mat(), hist_test1, 2, histSize, ranges, true, false);
+	normalize(hist_test1, hist_test1, 0, 1, NORM_MINMAX, -1, Mat());
 
-	//calcHist(&hsv_test2, 1, channels, Mat(), hist_test2, 2, histSize, ranges, true, false);
-	//normalize(hist_test2, hist_test2, 0, 1, NORM_MINMAX, -1, Mat());
+	calcHist(&hsv_test2, 1, channels, Mat(), hist_test2, 2, histSize, ranges, true, false);
+	normalize(hist_test2, hist_test2, 0, 1, NORM_MINMAX, -1, Mat());
 
-	FileStorage fs2("2.yml", FileStorage::READ);
+	/*FileStorage fs2("2.yml", FileStorage::READ);
 	FileNode kptFileNode = fs2["frame 4"];
 	read(kptFileNode, hist_test1);
 	FileNode kptFileNode2 = fs2["frame 5"];
 	read(kptFileNode2, hist_test2);
 	fs2.release();
 	
-	/*FileStorage fs2("my_histogram_file.yml", FileStorage::READ);
+	FileStorage fs2("my_histogram_file.yml", FileStorage::READ);
 	FileNode kptFileNode = fs2["keypoints_1"];
 	read(kptFileNode, hist_base);
 	fs2.release();

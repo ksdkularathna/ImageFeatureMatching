@@ -1,0 +1,9 @@
+﻿  HistogramMatching.cpp
+d:\projects\fyp\opencv12test1\histogrammatching.cpp(1): fatal error C1083: Cannot open include file: 'opencv2/highgui.hpp': No such file or directory
+  FeatureMatchingMain.cpp
+d:\projects\fyp\opencv12test1\featurematching.h(2): fatal error C1083: Cannot open include file: 'opencv2/imgproc/imgproc.hpp': No such file or directory
+  ExtractFeatures.cpp
+d:\projects\fyp\opencv12test1\extractfeatures.cpp(1): fatal error C1083: Cannot open include file: 'opencv2/highgui.hpp': No such file or directory
+  FlannMatching.cpp
+d:\fyp\sources\flannmatching.cpp(1): fatal error C1083: Cannot open include file: 'opencv2/opencv_modules.hpp': No such file or directory
+  Generating Code...

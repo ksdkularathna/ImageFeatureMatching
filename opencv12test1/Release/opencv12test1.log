@@ -1,3 +1,10 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppClean.targets(76,5): warning : Access to the path 'c:\users\sampath\documents\visual studio 2015\projects\opencv12test1\release\opencv12test1.exe' is denied.
-  FlannMatching.cpp
-LINK : fatal error LNK1104: cannot open file 'C:\Users\Sampath\Documents\Visual Studio 2015\Projects\opencv12test1\Release\opencv12test1.exe'
+﻿  FlannMatching.cpp
+  ExtractFeatures.cpp
+  FeatureMatchingMain.cpp
+  HistogramMatching.cpp
+  MatchHistograms.cpp
+  Generating code
+  All 221 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  opencv12test1.vcxproj -> D:\Projects\FYP\opencv12test1\Release\opencv12test1.exe
+  opencv12test1.vcxproj -> D:\Projects\FYP\opencv12test1\Release\opencv12test1.pdb (Full PDB)
