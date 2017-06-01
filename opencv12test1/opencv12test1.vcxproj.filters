@@ -27,7 +27,7 @@
     <ClCompile Include="ExtractFeatures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MatchHistograms.cpp">
+    <ClCompile Include="MatchKeypoints.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

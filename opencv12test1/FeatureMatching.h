@@ -8,11 +8,12 @@ using namespace cv;
 
 int getLastAddId();
 int addANewAdvertisement(int addId, std::string addName);
-int extractFeaturesAndCreateFeatureFile(int addId, Mat image1, Mat image2, string frameName);
+int extractFeaturesAndCreateFeatureFile(int addId, Mat image2, string frameName);
+
 
 //int templateMatching();
 int histogramMatching();
 int flannMatching();
 int bruteForceMatching();
 
-std::vector<int>  matchHistograms(Mat image);
+int  matchKeypoints(Mat image, string time);

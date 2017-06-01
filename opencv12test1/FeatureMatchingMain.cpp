@@ -1,24 +1,28 @@
 
 #include "FeatureMatching.h" 
 #include <iostream>
+#include <opencv2/nonfree/nonfree.hpp>
 
 using namespace std;
+using namespace cv;
 
 /**
 * @function main
 */
 int main(int argc, char** argv)
 {
-	/*int a = getLastAddId();
+	/*
+	cv::initModule_nonfree();
+	int a = getLastAddId();
 	std::cout << "Last Add Id: " << a << endl;
-	*/
-	//addANewAdvertisement(3, "add three");
+	
+	addANewAdvertisement(a+1, "add three");
 	//Mat img1 = imread("source.jpg", IMREAD_COLOR);
-	//Mat img2 = imread("source.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-	//extractFeaturesAndCreateFeatureFile(3,img1,img2, "frame 10");
-
-	Mat img1 = imread("source.jpg", IMREAD_COLOR);
-	std::vector<int> x = matchHistograms(img1);
+	Mat img2 = imread("source.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	extractFeaturesAndCreateFeatureFile(a+1,img2, "f1");
+	*/
+	Mat img2 = imread("source.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	matchKeypoints(img2, "dfs");
 	
 	//for (std::vector<int>::const_iterator i = x.begin(); i != x.end(); ++i)
 	//	std::cout << *i << ' ';
@@ -28,5 +32,7 @@ int main(int argc, char** argv)
 	//templateMatching();
 	//flannMatching();
 	//bruteForceMatching();
+	//system("pause");
+	return 0;
 }
 

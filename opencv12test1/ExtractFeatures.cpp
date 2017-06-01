@@ -17,7 +17,7 @@ using namespace cv;
 
 int getLastAddId() {
 
-	ifstream ip("db/add_index.csv");
+	ifstream ip("add_index.csv");
 
 	if (!ip.is_open()) std::cout << "ERROR: add_index.csv File Open" << '\n';
 
@@ -58,26 +58,27 @@ int addANewAdvertisement(int addId, string addName) {
 
 	std::ofstream outfile;
 
-	outfile.open("db/add_index.csv", std::ios_base::app);
+	outfile.open("add_index.csv", std::ios_base::app);
 	outfile << '\n' << addId << "," << addName;
 	std::cout << "id " << addId << " advertisement added." << '\n';
 
 	// creating a directories for newly added addvertisement
 	// TODO : create other directories too
 	string directory1 = "db/" + std::to_string(addId);
-	string directory2 = "db/" + std::to_string(addId) + "/hist_features";
-	string directory3 = "db/" + std::to_string(addId) + "/surf_features";
+	//string directory2 = "db/" + std::to_string(addId) + "/hist_features";
+	//string directory3 = "db/" + std::to_string(addId) + "/surf_features";
 	_mkdir(directory1.c_str());
-	_mkdir(directory2.c_str());
-	_mkdir(directory3.c_str());
+	//_mkdir(directory2.c_str());
+	//_mkdir(directory3.c_str());
 
 	std::cout << "New directory created " << '\n';
 	return 0;
 }
 
-int extractFeaturesAndCreateFeatureFile(int addId, Mat image1, Mat image2, string frameName) {
+int extractFeaturesAndCreateFeatureFile(int addId, Mat image2, string frameName) {
 
 	//-------------- adding the histogram features to the database
+	/*
 	Mat hsv_base;
 	if (image1.empty())
 	{
@@ -114,23 +115,25 @@ int extractFeaturesAndCreateFeatureFile(int addId, Mat image1, Mat image2, strin
 	fs1.release();
 
 	cout << "Histogram features added to the feature file" << endl;
-
+	*/
+	
 	//--------------- adding surf features to the database
-
-	//Mat gray_image;
-
-	//cvtColor(image, gray_image, CV_LOAD_IMAGE_GRAYSCALE);
-
-	//Detect the keypoints using SURF Detector
 	int minHessian = 400;
 	SurfFeatureDetector detector(minHessian);
 
 	std::vector<KeyPoint> keypoints;
+	keypoints.reserve(10000);
 	detector.detect(image2, keypoints);
 
+	SurfDescriptorExtractor extractor;
+	
+	// feature vectors
+	Mat descriptors_1, descriptors_2;
+	extractor.compute(image2, keypoints, descriptors_1);
+
 	// sotring the key points to a file
-	cv::FileStorage fs2("db/" + std::to_string(addId) + "/surf_features/" + frameName + ".yml", cv::FileStorage::WRITE);
-	write(fs2, "frameName", keypoints);
+	cv::FileStorage fs2("db/" + std::to_string(addId) + "/" + frameName + ".yml", cv::FileStorage::WRITE);
+	write(fs2, frameName, descriptors_1);
 	fs2.release();
 
 	cout << "Surf features added to the feature file" << endl;
