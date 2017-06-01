@@ -61,6 +61,7 @@ int addANewAdvertisement(int addId, string addName) {
 	outfile.open("add_index.csv", std::ios_base::app);
 	outfile << '\n' << addId << "," << addName;
 	std::cout << "id " << addId << " advertisement added." << '\n';
+	outfile.close();
 
 	// creating a directories for newly added addvertisement
 	// TODO : create other directories too
