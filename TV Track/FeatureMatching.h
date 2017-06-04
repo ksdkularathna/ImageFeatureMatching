@@ -9,6 +9,7 @@ using namespace cv;
 typedef struct {
 	int frameId;
 	int adId;
+	string addName;
 }adDetails;
 
 int getLastAddId();
@@ -22,4 +23,6 @@ int bruteForceMatching();
 
 adDetails  matchKeypoints(Mat image, string time, int status, int directoryId);
 
-int evaluateAd(int frameId, int addId);
+adDetails evaluateAd(int addId, int matchCount, float duration);
+
+int writeOutput(int startFrame, float duration, string addName, int status);

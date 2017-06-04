@@ -69,7 +69,7 @@ int addANewAdvertisement(int addId, string addName) {
 	_mkdir(directory1.c_str());
 	//_mkdir(directory2.c_str());
 	//_mkdir(directory3.c_str());
-
+	outfile.close();
 	std::cout << "New directory created " << '\n';
 	return 0;
 }

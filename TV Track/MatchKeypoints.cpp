@@ -2,6 +2,7 @@
 #include "opencv2/imgproc.hpp"
 #include <iostream>
 #include "FeatureMatching.h"
+#include <math.h>
 
 using namespace std;
 using namespace cv;
@@ -283,31 +284,67 @@ adDetails matchKeypoints(Mat image, string time, int status, int directoryId) {
 	}
 }
 
-int evaluateAd(int frameId, int addId) {
-
-	float adDuration = (float)frameId / 30;
+adDetails evaluateAd(int addId, int matchCount, float duration) {
 
 	ifstream ip("add_index.csv");
 	if (!ip.is_open()) std::cout << "ERROR: add_index.csv File Open" << '\n';
 
 	string adId;
 	string addName;
-	string duration;
+	string durationString;
+	int frameCount = 0;
 
-	while (adId.compare(std::to_string(addId))) {
+	while (1) {
 
+		if (adId.compare(std::to_string(addId)) == true) {
+			break;
+		}
 		getline(ip, adId, ',');
 		getline(ip, addName, ',');
-		getline(ip, duration, ',');
+		getline(ip, durationString, '\n');
+	}
+	float adOriginalDuration = std::stof(durationString);
+	string line;
+	while (std::getline(ip, line)) {
+		frameCount++;
 	}
 
-	float adOriginalDuration = std::stof(duration);
-
-	if (((float)adDuration / (float)adOriginalDuration) * 100 >= 95) {
+	if (((float)duration / (float)adOriginalDuration) * 100 >= 90) {
 		// this means the advertisement is fully telecasted
-		return 1;
+		adDetails d;
+		d.addName = addName;
+		d.adId = addId;
+		return d;
 	}
 	else {
-		return 0;
+		adDetails d;
+		d.frameId = 0;
+		d.adId = 0;
+		return d;
 	}
+	ip.close();
+}
+int writeOutput(int startFrame, float duration, string addName, int status) {
+
+	std::ofstream outfile;
+	outfile.open("IterativeInputRead.csv", std::ios_base::app);
+
+	float startTime = (float)startFrame / 30;
+	float rounded_down = roundf(startTime * 100) / 100;
+	string time = std::to_string(rounded_down);
+	int pos = time.find(".");
+
+	//std::cout << time.substr(0, pos) << " " << time.substr(pos).substr(1, 2) << endl;
+
+	string a;
+	if (status == 1) {
+		a = "Fully telecasted";
+	}
+	else {
+		a = "Partially telecasted";
+	}
+
+	outfile << addName << "," << time.substr(0, pos) << "-" << time.substr(pos).substr(1, 2) << "," << duration << "," << a << "\n";
+	outfile.close();
+	return 1;
 }

@@ -270,7 +270,7 @@ int main()
 
 
 			if (score > 7 && skip <= 0) {
-				printf("*********************************************************");
+				printf("********************************************************* ");
 				if (status == 2) {
 					// this means second phase of the search. peform the search in the choosen directory
 					ad = matchKeypoints(frame, "12", 2, matchedAdId);
@@ -281,13 +281,31 @@ int main()
 						if (ad.adId != 0) {
 							// means a new ad started. 
 							// change the status as 2 to perform the choosen directory search
-							matchedAdId = ad.adId;
+
 							status = 2;
+
+							// do previous advertisement evaluation here since a new add is started.
 
 							float duration = ((float)frameNo - (float)startingFrameNumber) / 30;
 
-							std::cout << "Frame match count " << matchCount << endl;
-							std::cout << "Add duration " << duration << endl;
+							//std::cout << "Frame match count " << matchCount << endl;
+							//std::cout << "Ad duration " << duration << endl;
+
+							adDetails m = evaluateAd(matchedAdId, matchCount, duration);
+
+							if (m.adId != 0) {
+								// Fully telecasted add
+								writeOutput(startingFrameNumber, duration, m.addName, 1);
+								std::cout << "Advertisement " << matchedAdId << " Fully telecasted " << endl;
+
+							}
+							else {
+								// partially telecasted add
+								writeOutput(startingFrameNumber, duration, m.addName, 0);
+								std::cout << "Advertisement  " << matchedAdId << " Partially telecasted " << endl;
+							}
+
+							matchedAdId = ad.adId;
 							matchCount = 0;
 							startingFrameNumber = frameNo;
 						}
@@ -303,7 +321,7 @@ int main()
 						status = 2;
 						matchCount++;
 					}
-					std::cout << " Add id " << ad.adId << " Frame Id  " << ad.frameId << " status 2 " << " duration " << (float)currentAddLastFrameId / 30 << std::endl;
+					std::cout << " Add id " << ad.adId << " Frame Id  " << ad.frameId << " status 2 " << std::endl;
 				}
 
 				if (status == 1) {
@@ -320,7 +338,7 @@ int main()
 						// match is not found. continue status 1 search.
 						status = 1;
 					}
-					std::cout << " Add id " << ad.adId << " Frame Id " << ad.frameId << " from status 1 " << std::endl;
+					std::cout << " Add id " << ad.adId << " Frame Id " << ad.frameId << " status 1 " << std::endl;
 				}
 				skip = 5;
 			}
