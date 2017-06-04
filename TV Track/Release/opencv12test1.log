@@ -3,7 +3,7 @@ MatchKeypoints.cpp(299): warning C4805: '==': unsafe mix of type 'int' and type 
   Generating code
   2 of 781 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    20 functions had inline decision re-evaluated but remain unchanged
+    12 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   opencv12test1.vcxproj -> D:\Projects\TV Track\Release\opencv12test1.exe
   opencv12test1.vcxproj -> D:\Projects\TV Track\Release\opencv12test1.pdb (Full PDB)

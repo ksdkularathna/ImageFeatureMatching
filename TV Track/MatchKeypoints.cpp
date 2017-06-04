@@ -320,6 +320,7 @@ adDetails evaluateAd(int addId, int matchCount, float duration) {
 		adDetails d;
 		d.frameId = 0;
 		d.adId = 0;
+		d.addName = addName;
 		return d;
 	}
 	ip.close();
