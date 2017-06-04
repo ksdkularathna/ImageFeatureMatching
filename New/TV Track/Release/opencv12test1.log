@@ -1,0 +1,20 @@
+﻿  ExtractFeatures.cpp
+  MatchKeypoints.cpp
+  Source.cpp
+Source.cpp(81): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+Source.cpp(148): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Source.cpp(175): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+Source.cpp(208): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+Source.cpp(271): warning C4129: '%': unrecognized character escape sequence
+Source.cpp(319): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Source.cpp(322): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Source.cpp(382): warning C4101: 'e': unreferenced local variable
+Source.cpp(451): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+Source.cpp(451): warning C4305: 'initializing': truncation from 'double' to 'float'
+Source.cpp(410): warning C4101: 'x': unreferenced local variable
+  Generating code
+d:\projects\tv track\matchkeypoints.cpp(319): warning C4715: 'matchKeypoints': not all control paths return a value
+  All 779 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  opencv12test1.vcxproj -> D:\Projects\TV Track\Release\opencv12test1.exe
+  opencv12test1.vcxproj -> D:\Projects\TV Track\Release\opencv12test1.pdb (Full PDB)
