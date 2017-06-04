@@ -18,9 +18,6 @@
     <ClCompile Include="D:\FYP\Sources\FlannMatching.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HistogramMatching.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FeatureMatchingMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

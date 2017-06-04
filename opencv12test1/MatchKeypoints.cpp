@@ -3,9 +3,6 @@
 #include <iostream>
 #include "FeatureMatching.h"
 
-using namespace std;
-using namespace cv;
-
 // added for flann matching
 #include "opencv2/opencv_modules.hpp"
 #include <stdio.h>
@@ -17,41 +14,181 @@ using namespace cv;
 // added for directory reading
 #include <string>
 #include <filesystem>
+using namespace std;
+using namespace cv;
 namespace fs = std::experimental::filesystem;
 
-int matchKeypoints(Mat image, string time) {
+int matchKeypoints(Mat image, string time, int status, int directoryId) {
 
-	//-------------- adding the histogram features to the database
-	Mat hsv_base;
-	if (image.empty())
-	{
-		cout << "Can't read the images" << endl;
-		return -1;
+
+	if (status == 1) {
+		// This means perform the search only for first two directories
+
+		Mat hsv_base;
+		if (image.empty())
+		{
+			cout << "Can't read the images" << endl;
+			return -1;
+		}
+
+		//-- Step 1: Detect the keypoints using SURF Detector
+		int minHessian = 400;
+		SurfFeatureDetector detector(minHessian);
+		vector<KeyPoint> keypoints_1;
+		keypoints_1.reserve(10000);
+		detector.detect(image, keypoints_1);;
+
+		SurfDescriptorExtractor extractor;
+		Mat descriptors_1, descriptors_2;
+		extractor.compute(image, keypoints_1, descriptors_1);
+
+/*		FileStorage fs2("f1.yml", FileStorage::READ);
+		FileNode kptFileNode = fs2["f1"];
+		read(kptFileNode, descriptors_1);
+		fs2.release();
+		*/
+		std::string path = "db/";
+		int exactlyMatchedAddId = 0;
+		int mostMatchedAddId = 0;
+
+		bool isNestedLoopsBreaked = false;
+		for (auto & p : fs::directory_iterator(path)) {
+
+			//std::cout << p.path().filename() << std::endl;
+			bool outerBreak = false;
+			int i = 0;
+			int c = 0;
+
+			vector<int> paths;
+			for (auto & ip : fs::directory_iterator(p)) {
+				string temp = ip.path().relative_path().string();
+				paths.push_back(stoi(temp.substr(6, temp.find("."))));
+				c++;
+			}
+			std::sort(paths.begin(), paths.end());
+
+			for (int i = 0; i < c; ++i) {
+				//std::cout << paths[i] << std::endl;
+
+				//std::cout << ip << std::endl;
+				if (i == 2) {
+					break; // break the for loop after two iterations
+				}
+				//std::cout << ip << std::endl;
+				string filePath = p.path().relative_path().string() + "\\f" + std::to_string(paths[i]) + ".yml";
+				std::cout << filePath << std::endl;
+
+				FileStorage fs2(filePath, FileStorage::READ);
+				FileNode kptFileNode = fs2["f" + std::to_string(paths[i])];
+				read(kptFileNode, descriptors_2);
+				fs2.release();
+
+				//-- Step 3: Matching descriptor vectors using FLANN matcher
+				FlannBasedMatcher matcher;
+				std::vector< DMatch > matches;
+				matches.reserve(10000);
+				matcher.match(descriptors_1, descriptors_2, matches);
+
+				// Evaluate the results
+				double max_dist = 0; double min_dist = 100;
+				//-- Quick calculation of max and min distances between keypoints
+				for (int j = 0; j < descriptors_1.rows; j++)
+				{
+					double dist = matches[j].distance;
+					if (dist < min_dist) min_dist = dist;
+					if (dist > max_dist) max_dist = dist;
+				}
+
+				if (min_dist == 0 && max_dist == 0) {
+
+					// this means a perfect match is found. No need to search further. loops are breaked.
+					// adding the entry to the log
+
+					exactlyMatchedAddId = std::stoi(p.path().filename().string());
+					outerBreak = true;
+					std::cout << "Match found" << std::endl;
+					break;
+				}
+				//std::cout << good_matches.size() << std::endl;
+				//if a exact match is not found selecting the most closer one
+				std::vector< DMatch > good_matches;
+
+				for (int k = 0; k < descriptors_1.rows; k++)
+				{
+					if (matches[k].distance <= max(2 * min_dist, 0.02))
+					{
+						good_matches.push_back(matches[k]);
+					}
+				}
+				std::cout << "Match vector size " << matches.size() << std::endl;
+				std::cout << "Good match vector size " << good_matches.size() << std::endl;
+				if (((float)good_matches.size() / (float)matches.size()) * 100 >= 85) {
+					// Declaring the matching frame to a given threshold value
+
+					exactlyMatchedAddId = std::stoi(p.path().filename().string());
+					outerBreak = true;
+					std::cout << "Threshold match found" << std::endl;
+					break;
+
+				}
+			}
+			if (outerBreak == true) {
+
+				isNestedLoopsBreaked = true;
+				break;
+			}
+		}
+		if (isNestedLoopsBreaked == true) {
+
+			// this means there is a exact matches
+			/*std::ofstream outfile;
+			outfile.open("matched_adds.csv", std::ios_base::app);
+			outfile << mostMatchedAddId << "," << time << endl;
+			outfile.close();
+			*/
+			return exactlyMatchedAddId;
+
+		}
+		//std::cout << "Most feature matched count" << goodMatchesCount << std::endl;
+		//std::cout << "Matched add ID " << mostMatchedAddId << std::endl;
+		//std::cout << "Match finished" << std::endl;
+		return 0; // means there is no any matches found
 	}
 
-	//-- Step 1: Detect the keypoints using SURF Detector
-	int minHessian = 400;
-	SurfFeatureDetector detector(minHessian);
-	vector<KeyPoint> keypoints_1;
-	keypoints_1.reserve(10000);
-	detector.detect(image, keypoints_1);;
+	if (status == 2) {
 
-	SurfDescriptorExtractor extractor;
-	Mat descriptors_1, descriptors_2;
-	extractor.compute(image, keypoints_1, descriptors_1);
+		// This means second phase of the search. Perform the search in choosen directory
 
-	std::string path = "db/";
-	int goodMatchesCount = 0;
-	int mostMatchedAddId = 0;
+		Mat hsv_base;
+		if (image.empty())
+		{
+			cout << "Can't read the images" << endl;
+			return -1;
+		}
 
-	bool isNestedLoopsBreaked = false;
-	for (auto & p : fs::directory_iterator(path)) {
+		//-- Step 1: Detect the keypoints using SURF Detector
+		int minHessian = 400;
+		SurfFeatureDetector detector(minHessian);
+		vector<KeyPoint> keypoints_1;
+		keypoints_1.reserve(10000);
+		detector.detect(image, keypoints_1);;
 
-		//std::cout << p.path().filename() << std::endl;
-		bool outerBreak = false;
-		for (auto & ip : fs::directory_iterator(p)) {
+		SurfDescriptorExtractor extractor;
+		Mat descriptors_1, descriptors_2;
+		extractor.compute(image, keypoints_1, descriptors_1);
 
-			//std::cout << ip << std::endl;
+		FileStorage fs2("f261.yml", FileStorage::READ);
+		FileNode kptFileNode = fs2["f261"];
+		read(kptFileNode, descriptors_1);
+		fs2.release();
+
+		std::string path = "db/" + std::to_string(directoryId) + "/";
+
+		int exactlyMatchedAddId = 0;
+		bool isLoopBreaked = false;
+		for (auto & ip : fs::directory_iterator(path)) {
+
+			std::cout << ip << std::endl;
 
 			string filePath = ip.path().relative_path().string();
 			string fileName = ip.path().filename().string();
@@ -83,54 +220,59 @@ int matchKeypoints(Mat image, string time) {
 
 				// this means a perfect match is found. No need to search further. loops are breaked.
 				// adding the entry to the log
-				std::ofstream outfile;
+				/*std::ofstream outfile;
 
 				outfile.open("matched_adds.csv", std::ios_base::app);
 				outfile << p.path().filename().string() << "," << time << endl;
 				outfile.close();
-
-				outerBreak = true;
+				*/
+				exactlyMatchedAddId = directoryId;
+				std::cout << "Match found" << std::endl;
+				isLoopBreaked = true;
 				break;
-			}
-
-			//-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
-			//-- or a small arbitary value ( 0.02 ) in the event that min_dist is very
-			//-- small)
-			//-- PS.- radiusMatch can also be used here.
-			std::vector< DMatch > good_matches;
-
-			for (int i = 0; i < descriptors_1.rows; i++)
-			{
-				if (matches[i].distance <= max(2 * min_dist, 0.02))
-				{
-					good_matches.push_back(matches[i]);
-				}
-			}
-			if (good_matches.size() > goodMatchesCount) {
-
-				goodMatchesCount = good_matches.size();
-				mostMatchedAddId = std::stoi(p.path().filename().string());
 			}
 			//std::cout << good_matches.size() << std::endl;
 		}
-		if (outerBreak == true) {
+		if (isLoopBreaked == true) {
 
-			isNestedLoopsBreaked = true;
-			break;
+			// this means there is an exact matches.
+			// adding the best match add id to the log
+			/*std::ofstream outfile;
+			outfile.open("matched_adds.csv", std::ios_base::app);
+			outfile << mostMatchedAddId << "," << time << endl;
+			outfile.close();
+			*/
+			return exactlyMatchedAddId;
 		}
+		//std::cout << "Most feature matched count" << goodMatchesCount << std::endl;
+		//std::cout << "Matched add ID " << mostMatchedAddId << std::endl;
+		std::cout << "Match finished" << std::endl;
+		return 0; // means there is no any matches found
 	}
-	if (isNestedLoopsBreaked != true) {
 
-		// this means there are no any exact matches. search is performed in all the files
-		// adding the best match add id to the log
-		std::ofstream outfile;
-		outfile.open("matched_adds.csv", std::ios_base::app);
-		outfile << mostMatchedAddId << "," << time << endl;
-		outfile.close();
 
+}
+
+int evaluateAd(int frameId, int addId) {
+
+	float adDuration = (float)frameId / 30;
+
+	ifstream ip("add_index.csv");
+	if (!ip.is_open()) std::cout << "ERROR: add_index.csv File Open" << '\n';
+
+	string adId;
+	string addName;
+	string duration;
+
+	std::cout << adDuration << endl;
+	while (adId.compare(std::to_string(addId))) {
+
+		getline(ip, adId, ',');
+		getline(ip, addName, ',');
+		getline(ip, duration, '\n');
 	}
-	//std::cout << "Most feature matched count" << goodMatchesCount << std::endl;
-	//std::cout << "Matched add ID " << mostMatchedAddId << std::endl;
-	std::cout << "Match finished" << std::endl;
-	return 1;
+
+	float adOriginalDuration = std::stof(duration);
+	std::cout << adOriginalDuration << endl;
+
 }

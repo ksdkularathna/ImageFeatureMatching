@@ -157,7 +157,6 @@
     <ClCompile Include="D:\FYP\Sources\FlannMatching.cpp" />
     <ClCompile Include="ExtractFeatures.cpp" />
     <ClCompile Include="FeatureMatchingMain.cpp" />
-    <ClCompile Include="HistogramMatching.cpp" />
     <ClCompile Include="MatchKeypoints.cpp" />
   </ItemGroup>
   <ItemGroup>

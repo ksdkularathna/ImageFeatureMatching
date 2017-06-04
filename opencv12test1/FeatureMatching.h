@@ -16,4 +16,6 @@ int histogramMatching();
 int flannMatching();
 int bruteForceMatching();
 
-int  matchKeypoints(Mat image, string time);
+int matchKeypoints(Mat image, string time, int status, int directoryId);
+
+int evaluateAd(int frameId, int addId);

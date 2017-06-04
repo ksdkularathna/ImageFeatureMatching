@@ -15,7 +15,7 @@ int histogramMatching() {
 	Mat hsv_half_down;
 
 	src_base = imread("source.jpg", IMREAD_COLOR);
-	src_test1 = imread("image3.jpg", IMREAD_COLOR);
+	src_test1 = imread("image3.jpg", IMRED_COLOR);
 	src_test2 = imread("image4.jpg", IMREAD_COLOR);
 
 	if (src_base.empty() || src_test1.empty() || src_test2.empty())
