@@ -148,6 +148,7 @@ adDetails matchKeypoints(Mat image, string time, int status, int directoryId) {
 			outfile << mostMatchedAddId << "," << time << endl;
 			outfile.close();
 			*/
+
 			adDetails ad;
 			ad.adId = addId;
 			ad.frameId = frameId;
@@ -167,6 +168,11 @@ adDetails matchKeypoints(Mat image, string time, int status, int directoryId) {
 				}
 			}
 			ip.close();
+
+			std::ofstream outfile;
+			outfile.open("currentAd.txt");
+			outfile << adNamed;
+			outfile.close();
 
 			return ad;
 		}
@@ -305,6 +311,11 @@ adDetails matchKeypoints(Mat image, string time, int status, int directoryId) {
 				}
 			}
 			ip.close();
+
+			std::ofstream outfile;
+			outfile.open("currentAd.txt");
+			outfile << adNamed;
+			outfile.close();
 
 			return ad;
 		}

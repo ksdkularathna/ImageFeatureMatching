@@ -117,7 +117,7 @@ int main()
 		float adDuration = 0.0;
 
 		//VideoCapture cap("D:\\Projects\\ads\\joined.mp4"); // open video
-		//VideoCapture cap("D:\\Projects\\ads\\ad1\\ad1.mp4"); // open video
+		//VideoCapture cap("D:\\Projects\\ads\\recording\\Output.mp4"); // open video
 		VideoCapture cap("video/Output.mp4");
 
 		//VideoCapture cap(a);

@@ -13,7 +13,7 @@ Source.cpp(451): warning C4838: conversion from 'double' to 'float' requires a n
 Source.cpp(451): warning C4305: 'initializing': truncation from 'double' to 'float'
 Source.cpp(410): warning C4101: 'x': unreferenced local variable
   Generating code
-d:\projects\tv track\matchkeypoints.cpp(319): warning C4715: 'matchKeypoints': not all control paths return a value
+d:\projects\tv track\matchkeypoints.cpp(330): warning C4715: 'matchKeypoints': not all control paths return a value
   All 779 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   opencv12test1.vcxproj -> D:\Projects\TV Track\Release\opencv12test1.exe
