@@ -70,7 +70,7 @@ adDetails matchKeypoints(Mat image, string time, int status, int directoryId) {
 				//std::cout << paths[i] << std::endl;
 
 				//std::cout << ip << std::endl;
-				if (i == 3) {
+				if (i == 4) {
 					break; // break the for loop after two iterations
 				}
 				//std::cout << ip << std::endl;

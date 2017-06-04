@@ -115,6 +115,7 @@ int main()
 		int count = 0;
 
 		VideoCapture cap("D:\\Projects\\ads\\recording\\Output.mp4"); // open video
+		//VideoCapture cap("D:\\Projects\\ads\\ad1\\ad1.mp4"); // open video
 		//VideoCapture cap("D:\\Projects\\ads\\recording\\recording.mp4");
 
 		//VideoCapture cap(a);
@@ -134,6 +135,8 @@ int main()
 		int status = 1;
 		adDetails ad;
 		int currentAddLastFrameId = 0;
+		int matchCount = 0;
+		int startingFrameNumber = 0;
 
 		while (1)
 		{
@@ -269,14 +272,36 @@ int main()
 			if (score > 7 && skip <= 0) {
 				printf("*********************************************************");
 				if (status == 2) {
-					// this means second phase of the search. peform the search in the choosen directory.
-					ad = matchKeypoints(frame, "12", 2, ad.adId);
+					// this means second phase of the search. peform the search in the choosen directory
+					ad = matchKeypoints(frame, "12", 2, matchedAdId);
 					if (ad.adId == 0) {
-						status = 1;
-						// TODO : if a middle frame mismatch. 
+						// means match is not found in the choosen director
+						// then perform a status 1 search to check whether a new ad started or not
+						ad = matchKeypoints(frame, "12", 1, 0);
+						if (ad.adId != 0) {
+							// means a new ad started. 
+							// change the status as 2 to perform the choosen directory search
+							matchedAdId = ad.adId;
+							status = 2;
+
+							float duration = ((float)frameNo - (float)startingFrameNumber) / 30;
+
+							std::cout << "Frame match count " << matchCount << endl;
+							std::cout << "Add duration " << duration << endl;
+							matchCount = 0;
+							startingFrameNumber = frameNo;
+						}
+						else {
+							// nor a new add is started. may be a frame miss match
+							// skip to the next frame and continue the status 2 search
+							status = 2;
+						}
 					}
 					else {
-						currentAddLastFrameId = ad.frameId;
+						// match is found in the direcotory. make the status 2 to continue the searching in the directory
+						matchedAdId = ad.adId;
+						status = 2;
+						matchCount++;
 					}
 					std::cout << " Add id " << ad.adId << " Frame Id  " << ad.frameId << " status 2 " << " duration " << (float)currentAddLastFrameId / 30 << std::endl;
 				}
@@ -285,11 +310,18 @@ int main()
 					// this means initial status of search. perform the search in only first two files of the directories.
 					ad = matchKeypoints(frame, "12", 1, 0);
 					if (ad.adId != 0) {
+						// a match is found in a directory. make the status as 2 to perform the search inside the direcotry
+						matchedAdId = ad.adId;
 						status = 2;
+						matchCount++;
+						startingFrameNumber = frameNo;
+					}
+					else {
+						// match is not found. continue status 1 search.
+						status = 1;
 					}
 					std::cout << " Add id " << ad.adId << " Frame Id " << ad.frameId << " from status 1 " << std::endl;
 				}
-
 				skip = 5;
 			}
 
